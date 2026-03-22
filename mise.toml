@@ -1,0 +1,52 @@
+# mise.toml - TradingAgents development environment
+# Docs: https://mise.jdx.dev
+
+[tools]
+python = "3.12"
+
+[env]
+# Load .env file for API keys (OPENAI_API_KEY, GOOGLE_API_KEY, etc.)
+_.file = ".env"
+
+[tasks.setup]
+description = "Install dependencies and create virtual environment"
+run = "uv sync"
+
+[tasks.run]
+alias = "r"
+description = "Run the main trading analysis script"
+depends = ["setup"]
+run = "uv run main.py"
+
+[tasks.cli]
+alias = "c"
+description = "Run the TradingAgents CLI"
+depends = ["setup"]
+run = "uv run tradingagents"
+
+[tasks.test]
+alias = "t"
+description = "Run the test suite"
+depends = ["setup"]
+run = "uv run test.py"
+
+[tasks.lint]
+description = "Run linter"
+run = "uv run ruff check ."
+
+[tasks.format]
+description = "Format code"
+run = "uv run ruff format ."
+
+[tasks.lock]
+description = "Update uv.lock file"
+run = "uv lock"
+
+[tasks.clean]
+description = "Remove build artifacts and caches"
+run = [
+  "rm -rf dist build *.egg-info",
+  "rm -rf .venv",
+  "rm -rf __pycache__ .pytest_cache .mypy_cache .ruff_cache",
+  "find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true",
+]
